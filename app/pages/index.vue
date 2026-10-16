@@ -34,13 +34,8 @@ const onContinue = () => {
 <template>
     <main class="paywall">
         <Transition name="screen" mode="out-in">
-            <PaywallSuccess
-                v-if="purchase"
-                key="success"
-                :purchase="purchase"
-                :offer="purchasedOffer"
-                @continue="onContinue"
-            />
+            <PaywallSuccess v-if="purchase" key="success" :purchase="purchase" :offer="purchasedOffer"
+                @continue="onContinue" class="paywall__screen" />
 
             <div v-else key="paywall" class="paywall__screen">
                 <div class="paywall__body">
@@ -51,41 +46,23 @@ const onContinue = () => {
 
                         <PaywallLoader v-if="isLoading" />
                         <PaywallLoadError v-else-if="status === 'error'" :loading="isLoading" @retry="refresh()" />
-                        <div
-                            v-else
-                            ref="radioGroup"
-                            class="paywall__cards"
-                            role="radiogroup"
-                            aria-labelledby="offers-title"
-                            @keydown="onRadioKeydown"
-                        >
-                            <PaywallOfferCard
-                                v-for="offer in offers"
-                                :key="offer.id"
-                                :offer="offer"
-                                :selected="offer.id === selectedOfferId"
-                                :disabled="isBusy"
-                                @select="store.selectOffer"
-                            />
+                        <div v-else ref="radioGroup" class="paywall__cards" role="radiogroup"
+                            aria-labelledby="offers-title" @keydown="onRadioKeydown">
+                            <PaywallOfferCard v-for="offer in offers" :key="offer.id" :offer="offer"
+                                :selected="offer.id === selectedOfferId" :disabled="isBusy"
+                                @select="store.selectOffer" />
                         </div>
                     </section>
                 </div>
 
                 <footer class="paywall__footer">
-                    <PaywallPurchaseButton
-                        :loading="isPurchasing"
-                        :disabled="!selectedOffer || isRestoring"
-                        @click="store.buy"
-                    >
+                    <PaywallPurchaseButton :loading="isPurchasing" :disabled="!selectedOffer || isRestoring"
+                        @click="store.buy">
                         {{ ctaLabel }}
                     </PaywallPurchaseButton>
 
-                    <button
-                        class="paywall__restore"
-                        type="button"
-                        :disabled="isBusy || isLoading"
-                        @click="store.restore"
-                    >
+                    <button class="paywall__restore" type="button" :disabled="isBusy || isLoading"
+                        @click="store.restore">
                         {{ isRestoring ? 'Ищем покупки…' : 'Восстановить покупки' }}
                     </button>
                 </footer>
